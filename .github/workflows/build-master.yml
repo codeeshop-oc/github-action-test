@@ -48,7 +48,7 @@ jobs:
         git checkout -b ${{ env.TEMP_BRANCH_NAME }}   
     # Commits all changed files to the repository
     - name: Committing
-      if: steps.verify_diff.outputs.changed == 'true'      
+      if: steps.verify_diff.outputs.changed == 'true'
       run: |
         git config --global user.name "${{ env.CONFIG_USERNAME }}"
         git config --global user.email "${{ env.CONFIG_EMAIL }}"
@@ -56,10 +56,9 @@ jobs:
         git add .
         # "echo" returns true so the build succeeds, even if no changed files        
         git commit -m "${{ env.COMMIT_MESSAGE }}" || echo >> $GITHUB_OUTPUT
-    - name: Can't Commit
-      if: ${{ failure() && steps.demo.conclusion == 'failure' }}
-      run: |
-        echo ${{ steps.committing.conclusion }}
+    - name: No Changes
+      if: steps.verify_diff.outputs.changed != 'true'
+      run: exit 1        
   job2:
     needs: job1
     runs-on: ubuntu-latest

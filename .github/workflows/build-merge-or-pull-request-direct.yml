@@ -21,7 +21,6 @@ env:
 jobs:
   dependabot:
     permissions:
-      actions: write
       pull-requests: write
       contents: write
     name: Build Dist & Merge 
@@ -75,6 +74,5 @@ jobs:
         gh pr review ${{ env.TEMP_BRANCH_NAME }} --approve | echo
       env:
         GH_TOKEN: ${{ github.token }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
         

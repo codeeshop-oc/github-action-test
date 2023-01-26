@@ -51,7 +51,8 @@ jobs:
       run: |
         git add .
         # "echo" returns true so the build succeeds, even if no changed files        
-        git commit -m "${{ env.COMMIT_MESSAGE }}" || echo >> $GITHUB_OUTPUT        
+        git commit -m "${{ env.COMMIT_MESSAGE }}" || echo >> $GITHUB_OUTPUT
+        echo ${{ toJSON(github) }}
     - name: Can't Commit
       if: ${{ failure() && steps.demo.conclusion == 'failure' }}
       run: |

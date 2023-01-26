@@ -25,7 +25,7 @@ jobs:
     - name: Build      
       run: |
         # Add the command to build your dist folder here
-        echo yarn
+        yarn
         echo yarn build        
     - name: Deploy
       run: |

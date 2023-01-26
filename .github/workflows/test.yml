@@ -18,6 +18,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   dependabot:
+    permissions:
+      contents: write
+      
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code

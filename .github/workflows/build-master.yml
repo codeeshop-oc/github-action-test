@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: build-master  
+name: build-master
 on:
   push:
     branches: [ "main" ]
@@ -20,7 +20,7 @@ env:
 
 jobs:
   job1:
-    name: Dist Build
+    name: Build Dist
     runs-on: ubuntu-latest
     outputs:
       output1: ${{ steps.verify_diff.outputs.changed }}
@@ -38,10 +38,10 @@ jobs:
     - name: Check if there are any changes
       id: verify_diff
       run: |
-        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT    
+        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
     - name: No Changes
       id: no_changes
-      if: steps.verify_diff.outputs.changed != 'true'      
+      if: steps.verify_diff.outputs.changed != 'true'
       run: |
         exit 0
   job2:
@@ -57,20 +57,19 @@ jobs:
       - name: Setting Branch to Temp Branch Name
         if: steps.verify_diff.outputs.changed == 'true'
         run: |
-          git checkout -b ${{ env.TEMP_BRANCH_NAME }}   
+          git checkout -b ${{ env.TEMP_BRANCH_NAME }}
       # Commits all changed files to the repository
       - name: Committing
         run: |
           git config --global user.name "${{ env.CONFIG_USERNAME }}"
           git config --global user.email "${{ env.CONFIG_EMAIL }}"
-          
+
           git add .
-          # "echo" returns true so the build succeeds, even if no changed files        
+          # "echo" returns true so the build succeeds, even if no changed files
           git commit -m "${{ env.COMMIT_MESSAGE }}"
       - name: Push Commit
         id: checkout
-        run: |                
-          echo ${{ toJSON(needs) }}
+        run: |          
           git push -u origin ${{ env.TEMP_BRANCH_NAME }}
       - name: Merging
         run: |

@@ -21,7 +21,7 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     outputs:
-      output: ${{ steps.verify_diff.outputs.changed }}
+      output1: ${{ steps.no_changes.outputs.proceed }}
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js
@@ -36,8 +36,7 @@ jobs:
     - name: Check if there are any changes
       id: verify_diff
       run: |
-        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
-        echo ${{ steps.verify_diff.outputs.changed }}
+        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT        
     - name: Deleting Previous Branches
       if: steps.verify_diff.outputs.changed == 'true'
       run: |
@@ -56,30 +55,29 @@ jobs:
         
         git add .
         # "echo" returns true so the build succeeds, even if no changed files        
-        git commit -m "${{ env.COMMIT_MESSAGE }}" || echo >> $GITHUB_OUTPUT
+        git commit -m "${{ env.COMMIT_MESSAGE }}" >> $GITHUB_OUTPUT
     - name: No Changes
-      if: steps.verify_diff.outputs.changed != 'true'
-      run: exit 0
+      id: no_changes
+      if: steps.verify_diff.outputs.changed != 'true'      
+      run: |
+        echo "proceed=false" >> $GITHUB_OUTPUT
+        exit 0
   job2:
     needs: job1
     runs-on: ubuntu-latest
     outputs:
-      output: ${{ steps.checkout.outputs }}
+      output2: ${{ steps.checkout.outputs }}
     steps:
+      - run: echo ${{needs.job1.outputs.output1}}
       - name: You Can Commit
-        if: contains("${{ needs.job1.outputs.output }}", 'file changed')
+        if: contains("${{ needs.job1.outputs.output1 }}", 'file changed')
         id: checkout
-        run: |      
-          echo ${{ toJSON(steps) }}
+        run: |                
           echo ${{ toJSON(needs) }}
           git push -u origin ${{ env.TEMP_BRANCH_NAME }}
-          git checkout ${{ env.MASTER_BRANCH_NAME }} >> $GITHUB_OUTPUT
-  job3:
-    needs: [job2]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Merging
-        if: contains("${{ needs.job2.outputs.output }}", 'Create a pull request for')        
+          git checkout ${{ env.MASTER_BRANCH_NAME }}
+      - name: Merging        
+        if: contains("${{ needs.job1.outputs.output1 }}", 'Create a pull request for')
         run: |
           gh repo set-default ${{ env.CONFIG_USERNAME }}
           gh pr create --base ${{ env.MASTER_BRANCH_NAME }} --head ${{ env.TEMP_BRANCH_NAME }} --title "${{ env.PULL_TITLE }}" --body "${{ env.PULL_BODY }}" --reviewer ${{ env.ASSIGNEE }} --assignee ${{ env.REVIEWER }}

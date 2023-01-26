@@ -21,6 +21,7 @@ env:
 jobs:
   dependabot:
     permissions:
+      actions: write
       pull-requests: write
       contents: write
     name: Build Dist & Merge 

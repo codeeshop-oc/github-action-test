@@ -5,22 +5,10 @@ on:
     branches:
       - main
   workflow_dispatch:
-jobs:
-  DeleteOldWorkflows:
-    name: Delete Old Workflows
-    runs-on: ubuntu-latest
-    steps:
-    - name: Start
-      uses: MajorScruffy/delete-old-workflow-runs@v0.3.0
-      with:
-        repository: codeeshop-oc/github-action-test   # replace this with your own repository
-        older-than-seconds: 1                      # 86400 remove all workflow runs older than 1 day
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:  
   dependabot:
     permissions:
-      contents: write
-      
+      contents: write      
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -37,5 +25,3 @@ jobs:
         git add dist
         git commit -m "Automated deployment"
         git push origin main
-      env:
-        GITHUB_TOKEN: ${{ secrets.github_token }}

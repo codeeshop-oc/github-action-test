@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Start
-      uses: MajorScruffy/delete-old-workflow-runs@v0.2.0
+      uses: MajorScruffy/delete-old-workflow-runs@v0.3.0
       with:
         repository: codeeshop-oc/github-action-test   # replace this with your own repository
         older-than-seconds: 500                      # 86400 remove all workflow runs older than 1 day

@@ -21,7 +21,6 @@ env:
 jobs:
   dependabot:
     permissions:
-      pull-requests: write
       contents: write
     name: Build Dist & Merge 
     runs-on: ubuntu-latest    

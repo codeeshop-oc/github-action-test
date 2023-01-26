@@ -21,7 +21,7 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     outputs:
-      output: ${{ steps.committing.outputs }}
+      output: ${{ steps.verify_diff.outputs.changed }}
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js
@@ -30,29 +30,32 @@ jobs:
         node-version: 16
         cache: 'yarn'
     - run: echo "yarn"
-    
-    - name: Config Repo
+    - name: Yarn Building
       run: |
-        git config --global user.name "${{ env.CONFIG_USERNAME }}"
-        git config --global user.email "${{ env.CONFIG_EMAIL }}"
+        echo "yarn build"
+    - name: Check if there are any changes
+      id: verify_diff
+      run: |
+        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
     - name: Deleting Previous Branches
+      if: steps.verify_diff.outputs.changed == 'true'
       run: |
         git branch -D ${{ env.TEMP_BRANCH_NAME }} || echo
         git push -d origin ${{ env.TEMP_BRANCH_NAME }} || echo
     - name: Setting Branch to Temp Branch Name
+      if: steps.verify_diff.outputs.changed == 'true'
       run: |
-        git checkout -b ${{ env.TEMP_BRANCH_NAME }}      
-    - name: Yarn Building
-      run: |
-        echo "yarn build"
+        git checkout -b ${{ env.TEMP_BRANCH_NAME }}   
     # Commits all changed files to the repository
     - name: Committing
-      id: committing
+      if: steps.verify_diff.outputs.changed == 'true'      
       run: |
+        git config --global user.name "${{ env.CONFIG_USERNAME }}"
+        git config --global user.email "${{ env.CONFIG_EMAIL }}"
+        
         git add .
         # "echo" returns true so the build succeeds, even if no changed files        
         git commit -m "${{ env.COMMIT_MESSAGE }}" || echo >> $GITHUB_OUTPUT
-        echo ${{ toJSON(github) }}
     - name: Can't Commit
       if: ${{ failure() && steps.demo.conclusion == 'failure' }}
       run: |

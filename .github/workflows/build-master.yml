@@ -1,0 +1,84 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: build-master  
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+env:
+  CONFIG_USERNAME: codeeshop-oc/vue-full-autocomplete
+  CONFIG_EMAIL: github-stats[bot]@codeeshop-oc.github.io
+  TEMP_BRANCH_NAME: dist-files
+  MASTER_BRANCH_NAME: main
+  COMMIT_MESSAGE: Update Dist Files
+  PULL_TITLE: Update Dist Files
+  PULL_BODY: Dist-Build Files
+  ASSIGNEE: codeeshop-oc
+  REVIEWER: codeeshop-oc
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    outputs:
+      output: ${{ steps.committing.outputs }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: 'yarn'
+    - run: echo "yarn"
+    
+    - name: Config Repo
+      run: |
+        git config --global user.name "${{ env.CONFIG_USERNAME }}"
+        git config --global user.email "${{ env.CONFIG_EMAIL }}"
+    - name: Deleting Previous Branches
+      run: |
+        git branch -D ${{ env.TEMP_BRANCH_NAME }} || echo
+        git push -d origin ${{ env.TEMP_BRANCH_NAME }} || echo
+    - name: Setting Branch to Temp Branch Name
+      run: |
+        git checkout -b ${{ env.TEMP_BRANCH_NAME }}      
+    - name: Yarn Building
+      run: |
+        echo "yarn build"
+    # Commits all changed files to the repository
+    - name: Committing
+      id: committing
+      run: |
+        git add .
+        # "echo" returns true so the build succeeds, even if no changed files        
+        git commit -m "${{ env.COMMIT_MESSAGE }}" || echo >> $GITHUB_OUTPUT        
+    - name: Can't Commit
+      if: ${{ failure() && steps.demo.conclusion == 'failure' }}
+      run: |
+        echo ${{ steps.committing.conclusion }}
+  job2:
+    needs: job1
+    runs-on: ubuntu-latest
+    outputs:
+      output: ${{ steps.checkout.outputs }}
+    steps:
+      - name: You Can Commit
+        if: contains("${{ needs.job1.outputs.output }}", 'file changed')
+        id: checkout
+        run: |
+          git push -u origin ${{ env.TEMP_BRANCH_NAME }}
+          git checkout ${{ env.MASTER_BRANCH_NAME }} >> $GITHUB_OUTPUT
+  job3:
+    needs: [job2]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merging
+        if: contains("${{ needs.job2.outputs.output }}", 'Create a pull request for')        
+        run: |
+          gh repo set-default ${{ env.CONFIG_USERNAME }}
+          gh pr create --base ${{ env.MASTER_BRANCH_NAME }} --head ${{ env.TEMP_BRANCH_NAME }} --title "${{ env.PULL_TITLE }}" --body "${{ env.PULL_BODY }}" --reviewer ${{ env.ASSIGNEE }} --assignee ${{ env.REVIEWER }}
+          gh pr merge ${{ env.TEMP_BRANCH_NAME }} -m --auto
+          gh pr review ${{ env.TEMP_BRANCH_NAME }} --approve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

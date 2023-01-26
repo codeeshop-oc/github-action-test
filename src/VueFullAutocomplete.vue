@@ -103,7 +103,6 @@ export default {
 
 <template>
   <div class="VueFullAutocomplete" v-if="isPopup">
-  
     <div class="VueFullAutocompleteModal">
       <div>
         <input v-model="search" id="VueFullAutocompleteInput" @input="searchResults()">

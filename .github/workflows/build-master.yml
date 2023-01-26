@@ -21,7 +21,7 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     outputs:
-      output1: ${{ steps.no_changes.outputs.proceed }}
+      output1: ${{ steps.verify_diff.outputs.changed }}
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js
@@ -36,7 +36,7 @@ jobs:
     - name: Check if there are any changes
       id: verify_diff
       run: |
-        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT        
+        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
     - name: Deleting Previous Branches
       if: steps.verify_diff.outputs.changed == 'true'
       run: |
@@ -60,24 +60,20 @@ jobs:
       id: no_changes
       if: steps.verify_diff.outputs.changed != 'true'      
       run: |
-        echo "proceed=false" >> $GITHUB_OUTPUT
         exit 0
   job2:
     needs: job1
     runs-on: ubuntu-latest
-    outputs:
-      output2: ${{ steps.checkout.outputs }}
-    steps:
-      - run: echo ${{needs.job1.outputs.output1}}
+    steps:      
       - name: You Can Commit
-        if: contains("${{ needs.job1.outputs.output1 }}", 'file changed')
+        if: needs.job1.outputs.output1 == 'true'
         id: checkout
         run: |                
           echo ${{ toJSON(needs) }}
           git push -u origin ${{ env.TEMP_BRANCH_NAME }}
           git checkout ${{ env.MASTER_BRANCH_NAME }}
       - name: Merging        
-        if: contains("${{ needs.job1.outputs.output1 }}", 'Create a pull request for')
+        if: needs.job1.outputs.output1 == 'true'
         run: |
           gh repo set-default ${{ env.CONFIG_USERNAME }}
           gh pr create --base ${{ env.MASTER_BRANCH_NAME }} --head ${{ env.TEMP_BRANCH_NAME }} --title "${{ env.PULL_TITLE }}" --body "${{ env.PULL_BODY }}" --reviewer ${{ env.ASSIGNEE }} --assignee ${{ env.REVIEWER }}

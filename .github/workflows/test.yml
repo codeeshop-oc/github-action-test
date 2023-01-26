@@ -19,15 +19,18 @@ jobs:
         # Add the command to build your dist folder here
         yarn
         yarn build
-    - name: Check - Something To Commit ?
-      id: verify_diff
-      run: |
-        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
-    - name: Deploy
-      if: steps.verify_diff.outputs.changed == 'true'
+    - name: Update Git Config
       run: |
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global user.name "github-actions[bot]"
         git add dist
+    - name: Check - Something To Commit ?
+      id: verify_diff
+      run: |
+        git diff --staged || echo "changed=true" >> $GITHUB_OUTPUT
+    - name: Deploy
+      if: steps.verify_diff.outputs.changed == 'true'
+      run: |
         git commit -m "Automated deployment"
         git push
+    

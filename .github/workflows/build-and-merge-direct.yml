@@ -1,4 +1,4 @@
-name: build-and-merge-direct Bot
+name: [Bot]build-and-merge-direct
 
 on:
   push:

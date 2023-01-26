@@ -37,6 +37,7 @@ jobs:
       id: verify_diff
       run: |
         git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
+        echo ${{ steps.verify_diff.outputs.changed }}
     - name: Deleting Previous Branches
       if: steps.verify_diff.outputs.changed == 'true'
       run: |
@@ -58,7 +59,7 @@ jobs:
         git commit -m "${{ env.COMMIT_MESSAGE }}" || echo >> $GITHUB_OUTPUT
     - name: No Changes
       if: steps.verify_diff.outputs.changed != 'true'
-      run: exit 1        
+      run: exit 0
   job2:
     needs: job1
     runs-on: ubuntu-latest

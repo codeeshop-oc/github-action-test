@@ -70,6 +70,7 @@ jobs:
         if: contains("${{ needs.job1.outputs.output }}", 'file changed')
         id: checkout
         run: |
+          echo ${{ toJSON(needs.job1.outputs) }}
           git push -u origin ${{ env.TEMP_BRANCH_NAME }}
           git checkout ${{ env.MASTER_BRANCH_NAME }} >> $GITHUB_OUTPUT
   job3:

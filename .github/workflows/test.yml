@@ -27,7 +27,7 @@ jobs:
     - name: Check - Something To Commit ?
       id: verify_diff
       run: |
-        git diff --staged || echo "changed=true" >> $GITHUB_OUTPUT
+        git diff --quiet --staged . || echo "changed=true" >> $GITHUB_OUTPUT
     - name: Deploy
       if: steps.verify_diff.outputs.changed == 'true'
       run: |

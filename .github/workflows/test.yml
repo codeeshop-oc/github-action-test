@@ -30,4 +30,4 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git add dist
         git commit -m "Automated deployment"
-        git push origin main
+        git push

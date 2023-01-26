@@ -1,4 +1,4 @@
-name: Dependent Bot
+name: build-and-merge-direct Bot
 
 on:
   push:

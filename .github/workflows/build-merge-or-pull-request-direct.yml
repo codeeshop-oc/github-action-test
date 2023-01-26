@@ -72,3 +72,5 @@ jobs:
         gh pr create --base ${{ env.MASTER_BRANCH_NAME }} --head ${{ env.TEMP_BRANCH_NAME }} --title "${{ env.PULL_TITLE }}" --body "${{ env.PULL_BODY }}" --reviewer ${{ env.ASSIGNEE }} --assignee ${{ env.REVIEWER }}
         gh pr merge ${{ env.TEMP_BRANCH_NAME }} -m --auto | echo
         gh pr review ${{ env.TEMP_BRANCH_NAME }} --approve | echo
+      env:
+        GH_TOKEN: ${{ github.token }}

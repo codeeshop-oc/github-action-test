@@ -7,15 +7,15 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 env:
-  CONFIG_USERNAME: codeeshop-oc/vue-full-autocomplete
-  CONFIG_EMAIL: github-stats[bot]@codeeshop-oc.github.io
+  CONFIG_USERNAME: ${{ github.repository }}
+  CONFIG_EMAIL: github-actions[bot]@${{ github.repository_owner }}.github.io
   TEMP_BRANCH_NAME: dist-files
-  MASTER_BRANCH_NAME: main
+  MASTER_BRANCH_NAME: ${{ github.ref_name }}
   COMMIT_MESSAGE: Update Dist Files
   PULL_TITLE: Update Dist Files
-  PULL_BODY: Dist-Build Files
-  ASSIGNEE: codeeshop-oc
-  REVIEWER: codeeshop-oc
+  PULL_BODY: Dist Folder Build Files
+  ASSIGNEE: ${{ github.repository_owner }}
+  REVIEWER: ${{ github.repository_owner }}
 
 jobs:
   job1:

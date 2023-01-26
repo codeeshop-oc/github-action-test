@@ -19,6 +19,7 @@ env:
 
 jobs:
   job1:
+    name: Dist Build
     runs-on: ubuntu-latest
     outputs:
       output1: ${{ steps.verify_diff.outputs.changed }}
@@ -62,18 +63,18 @@ jobs:
       run: |
         exit 0
   job2:
+    name: Commit & Merge
     needs: job1
+    if: needs.job1.outputs.output1 == 'true'
     runs-on: ubuntu-latest
     steps:      
-      - name: You Can Commit
-        if: needs.job1.outputs.output1 == 'true'
+      - name: You Can Commit        
         id: checkout
         run: |                
           echo ${{ toJSON(needs) }}
           git push -u origin ${{ env.TEMP_BRANCH_NAME }}
           git checkout ${{ env.MASTER_BRANCH_NAME }}
-      - name: Merging        
-        if: needs.job1.outputs.output1 == 'true'
+      - name: Merging
         run: |
           gh repo set-default ${{ env.CONFIG_USERNAME }}
           gh pr create --base ${{ env.MASTER_BRANCH_NAME }} --head ${{ env.TEMP_BRANCH_NAME }} --title "${{ env.PULL_TITLE }}" --body "${{ env.PULL_BODY }}" --reviewer ${{ env.ASSIGNEE }} --assignee ${{ env.REVIEWER }}

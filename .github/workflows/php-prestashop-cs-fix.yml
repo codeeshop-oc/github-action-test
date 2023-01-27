@@ -47,6 +47,14 @@ jobs:
     - name: Git
       run: git status
     
+  job2:
+    runs-on: ubuntu-latest
+    needs: [build]
+  
+    steps:
+      - name: Git
+        run: git status
+    
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 

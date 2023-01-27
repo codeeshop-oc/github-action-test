@@ -7,9 +7,22 @@ ini_set('memory_limit','256M');
 $it = new RecursiveTreeIterator(new RecursiveDirectoryIterator(getcwd(), RecursiveDirectoryIterator::SKIP_DOTS), RecursiveDirectoryIterator::SKIP_DOTS);
 $new_array_path = [];
 
+function allowedDir($path) {
+    $bool = true;
+    $folders = ['.git', 'vendor'];
+    foreach($folders as $folder) {
+        if(strpos($path, $folder) {
+            $bool = false;
+            break;
+        }
+    }
+           
+    return $bool;
+}
+    
 foreach($it as $path) {
     $new_path = substr($path, strpos($path, '-/') + 1);
-    if(!strpos($new_path, '.git') && is_dir($new_path)) {        
+    if(allowedDir($new_path) && is_dir($new_path)) {        
         $new_array_path[] = $new_path;
     }
 }

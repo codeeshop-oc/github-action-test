@@ -4,29 +4,47 @@
 // ../tools/php-cs-fixer/vendor/bin/php-cs-fixer fix getcwd() --config getcwd() . /.php-cs-fixer.dist.php
 ini_set('memory_limit','256M');
 
-$it = new RecursiveTreeIterator(new RecursiveDirectoryIterator(getcwd(), RecursiveDirectoryIterator::SKIP_DOTS), RecursiveDirectoryIterator::SKIP_DOTS);
-$new_array_path = [];
-
-function allowedDir($path) {
+function isAllowedDir($path) {
     $bool = true;
-    $folders = ['.git', 'vendor', 'node_modules', 'tools/php-cs-fixer', 'tools', 'build', 'docs'];
-    foreach($folders as $folder) {
-        if(strpos($path, $folder)) {
-            $bool = false;
-            break;
+    $folders = ['.git', 'vendor', 'node_modules'];
+
+    if(is_dir($path)) {
+        foreach($folders as $folder) {
+            if(strpos($path, $folder)) {
+                $bool = false;
+                break;
+            }
         }
+    } else {
+        $bool = false;
     }
-           
+
     return $bool;
 }
-    
-foreach($it as $path) {
-    $new_path = substr($path, strpos($path, '-/') + 1);
-    if(allowedDir($new_path) && is_dir($new_path)) {        
-        $new_array_path[] = $new_path;
-        echo $new_path;
+
+function getAllDirs($new_array_path = []) {
+    $it = new RecursiveTreeIterator(new RecursiveDirectoryIterator(getcwd(), RecursiveDirectoryIterator::SKIP_DOTS), RecursiveDirectoryIterator::SKIP_DOTS);
+    foreach($it as $path) {
+        $new_path = substr($path, strpos($path, '-/') + 1);
+        if(isAllowedDir($new_path)) {
+            $new_array_path[] = $new_path;
+        }
     }
+
+    return $new_array_path;
 }
+
+function printAllDir($new_array_path) {
+    echo 'Base Path: ' . getcwd() . "\n";
+    echo '--- All Directories (' . count($new_array_path) . ') ---' . "\n";
+    foreach($new_array_path as $path) {
+        echo str_replace(getcwd(), '', $path) . "\n";
+    }
+    echo '--- End All Directories ---' . "\n";
+}
+
+$new_array_path = getAllDirs();
+printAllDir($new_array_path);
 
 $finder = PhpCsFixer\Finder::create()->in($new_array_path)->notPath([
     'Unit/Resources/config/params.php',

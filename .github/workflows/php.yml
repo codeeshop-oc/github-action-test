@@ -44,6 +44,9 @@ jobs:
     - name: Run PHP-CS
       run: tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
     
+    - name: Run PHP-CS
+      run: git status
+    
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 

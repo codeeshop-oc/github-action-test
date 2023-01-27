@@ -41,6 +41,8 @@ jobs:
       run: |
         mkdir -p tools/php-cs-fixer
         composer require --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer
+    - name: Run PHP-CS
+      run: tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
     
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md

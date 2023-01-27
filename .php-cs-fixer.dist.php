@@ -9,9 +9,9 @@ $new_array_path = [];
 
 function allowedDir($path) {
     $bool = true;
-    $folders = ['.git', 'vendor'];
+    $folders = ['.git', 'vendor', 'node_modules'];
     foreach($folders as $folder) {
-        if(strpos($path, $folder) {
+        if(strpos($path, $folder)) {
             $bool = false;
             break;
         }

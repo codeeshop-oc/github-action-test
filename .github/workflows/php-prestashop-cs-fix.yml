@@ -52,7 +52,8 @@ jobs:
     needs: [build]
   
     steps:
-      - name: Git
+      - uses: actions/checkout@v3
+      - name: Git        
         run: git status
     
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"

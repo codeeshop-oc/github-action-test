@@ -24,12 +24,9 @@ foreach($it as $path) {
     $new_path = substr($path, strpos($path, '-/') + 1);
     if(allowedDir($new_path) && is_dir($new_path)) {        
         $new_array_path[] = $new_path;
+        echo $new_path;
     }
 }
-
-echo '<pre>';
-print_r($new_array_path);
-echo '</pre>';
 
 $finder = PhpCsFixer\Finder::create()->in($new_array_path)->notPath([
     'Unit/Resources/config/params.php',

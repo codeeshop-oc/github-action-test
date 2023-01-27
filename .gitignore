@@ -101,3 +101,9 @@ typings/
 
 # TernJS port file
 .tern-port
+
+# Bundle Tool PHP CS Local files
+tools/
+composer.json
+composer.lock
+.php_cs.cache

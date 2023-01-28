@@ -80,7 +80,7 @@ jobs:
     - name: Push Commit
       if: steps.verify_diff.outputs.changed == 'true'
       id: checkout
-      run: |        
+      run: |
         git commit -m "${{ env.COMMIT_MESSAGE }}"
         git push -u origin ${{ env.TEMP_BRANCH_NAME }}
 

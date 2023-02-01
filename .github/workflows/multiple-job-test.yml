@@ -6,6 +6,11 @@ on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
+    inputs:
+      run_second_job:
+        description: 'Run Commit & Merge'
+        required: true
+        default: 'true'
 env:
   CONFIG_USERNAME: ${{ github.repository }}
   CONFIG_EMAIL: github-actions[bot]@${{ github.repository_owner }}.github.io
@@ -47,7 +52,7 @@ jobs:
   job2:
     name: Commit & Merge
     needs: job1
-    if: needs.job1.outputs.output1 == 'true'
+    if: github.event.inputs.run_second_job == 'true' && needs.job1.outputs.output1 == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Deleting Previous Branches

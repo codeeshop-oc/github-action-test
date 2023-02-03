@@ -10,36 +10,54 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish-gpr:  
+  lint:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:      
-      - uses: actions/checkout@v3      
-      - uses: actions/setup-node@v3
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.4
+
+      - name: Set node
+        uses: actions/setup-node@v3
         with:
-          node-version: 14     
-      - uses: pnpm/action-setup@v2.2.4
-        name: Install pnpm
-        id: pnpm-install
+          node-version: 16.x
+          cache: pnpm
+
+      - name: Install
+        run: pnpm i
+
+      - name: Lint
+        run: pnpm run lint
+
+  test:
+    runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 10
+
+    strategy:
+      matrix:
+        node_version: [14.x, 16.x]
+        os: [ubuntu-latest, windows-latest] # , macos-latest]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.4
+
+      - name: Set node version to ${{ matrix.node_version }}
+        uses: actions/setup-node@v3
         with:
-          version: 7.1.0
-          run_install: |
-            - recursive: true
-              args: [--frozen-lockfile, --strict-peer-dependencies]
-            - args: [--global, gulp, prettier, typescript]
+          node-version: ${{ matrix.node_version }}
+          cache: pnpm
 
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-          echo "TAG_VERSION=$(pnpm pkg get version)" >> $GITHUB_OUTPUT
+      - name: Install
+        run: pnpm i
 
-      - name: Install dependencies
-        run: pnpm install        
+      - name: Build
+        run: pnpm run build
 
-      - run: ${{ steps.pnpm-cache.outputs.TAG_VERSION }}
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Test
+        run: pnpm run test

@@ -14,10 +14,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-  
+      
       - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
         with:
-          version: 6.0.2
+          version: 7
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
           
       - name: Set node
         uses: actions/setup-node@v3
@@ -44,9 +54,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2.2.4
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
       - name: Set node version to ${{ matrix.node_version }}
         uses: actions/setup-node@v3

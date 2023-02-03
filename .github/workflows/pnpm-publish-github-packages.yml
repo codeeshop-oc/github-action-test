@@ -1,20 +1,18 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
-
-name: Node.js Package
+name: Deploy
 
 on:
-  release:
-    types: [created]    
-  
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+        with:
+          fetch-depth: 0
+
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         id: pnpm-install
@@ -27,34 +25,27 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
           
-      - name: Set node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 16
           cache: pnpm
 
-      - name: Install
-        run: pnpm i
+      - name: Install Packages
+      - run: pnpm i --frozen-lockfile
 
       - name: Lint
         run: pnpm run lint
 
-  test:
-    runs-on: ${{ matrix.os }}
 
-    timeout-minutes: 10
-
-    strategy:
-      matrix:
-        node_version: [14.x, 16.x]
-        os: [ubuntu-latest, windows-latest] # , macos-latest]
-      fail-fast: false
-
+  deploy:
+    needs: lint
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+        with:
+          fetch-depth: 0
+
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         id: pnpm-install
@@ -67,18 +58,20 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Set node version to ${{ matrix.node_version }}
-        uses: actions/setup-node@v3
+          
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node_version }}
+          node-version: 16
           cache: pnpm
 
-      - name: Install
-        run: pnpm i
+      - name: Install Packages
+      - run: pnpm i --frozen-lockfile
 
       - name: Build
-        run: pnpm run build
+        run: yarn docs:build
 
-      - name: Test
-        run: pnpm run test
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/.vitepress/dist

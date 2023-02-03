@@ -25,7 +25,10 @@ jobs:
         id: pnpm-install
         with:
           version: 7.1.0
-          run_install: false
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --strict-peer-dependencies]
+            - args: [--global, gulp, prettier, typescript]
 
       - name: Get pnpm store directory
         id: pnpm-cache

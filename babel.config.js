@@ -9,10 +9,7 @@ const buildPresets = [
       //   /(optional-chaining|nullish-coalescing)/
       // ],
     },
-  ],
-  // ['@babel/preset-react', {targets: {node: 'current'}}],
-  // ['@babel/plugin-syntax-jsx', {targets: {node: 'current'}}],
-  // ['@babel/preset-plugin-syntax-jsx', {targets: {node: 'current'}}]
+  ],  
 ];
 module.exports = {
   presets: (process.env.NODE_ENV === 'development' ? devPresets : buildPresets),

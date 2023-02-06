@@ -1,7 +1,6 @@
 # Vue Full Autocomplete
 
 ## Props
-
 ### Passing Setting Props
 
 ```html

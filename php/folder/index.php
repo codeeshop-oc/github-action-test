@@ -1,7 +1,7 @@
 <?php
 echo  "here";
 
-echo "now"      ;    
+echo "now"     ;    
 
 $arr = ['number'];
 

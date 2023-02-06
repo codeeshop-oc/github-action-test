@@ -10,6 +10,10 @@ on:
       - '**/*.php'
       - '**/*.js'
       - '**/*.css'
+      
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
 env:
   CONFIG_USERNAME: ${{ github.repository }}
   CONFIG_EMAIL: github-actions[bot]@users.noreply.github.com

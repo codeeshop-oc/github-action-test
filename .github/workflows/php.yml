@@ -16,4 +16,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: GuillaumeFalourd/git-commit-push@main
+    - uses: codeeshop-oc/php-cs-fix-merge@1.0.1
+

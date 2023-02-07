@@ -1,3 +1,3 @@
 <?php
 
-$array = ["user" => "hello", "search" => true];
+$array = ['user' => 'hello', 'search' => true];

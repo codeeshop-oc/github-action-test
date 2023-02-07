@@ -1,10 +1,11 @@
 <?php
-echo  "here";
 
-echo "now"     ;    
+echo 'here';
+
+echo 'now';
 
 $arr = ['number'];
 
-$newarr = array('number', 'time');
+$newarr = ['number', 'time'];
 
-print_r  ($newarr);
+print_r($newarr);

@@ -14,6 +14,3 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: codeeshop-oc/php-cs-fix-merge@1.0.1
-      with: 
-        github_token: ${{ github.token }}
-

@@ -16,6 +16,4 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-  
-    - name: phpcs
-      uses: codeeshop-oc/prestashop-php-cs-fixer@0.0.3
+    - uses: GuillaumeFalourd/git-commit-push@main

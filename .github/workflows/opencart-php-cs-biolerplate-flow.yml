@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: 16.x
           cache: 'yarn'
+          cache-dependency-path: './yarn.lock'
       - run: yarn
       - name: Lint Fix
         run: yarn run lint-fix

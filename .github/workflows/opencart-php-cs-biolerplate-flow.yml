@@ -14,13 +14,16 @@ jobs:
       contents: write
       
     runs-on: ubuntu-latest
+    defaults:
+       run:
+         working-directory: ./
     steps:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
           cache: 'yarn'
-          cache-dependency-path: './yarn.lock'
+          cache-dependency-path: ./yarn.lock
       - run: yarn
       - name: Lint Fix
         run: yarn run lint-fix

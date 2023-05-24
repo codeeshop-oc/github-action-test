@@ -23,8 +23,11 @@ jobs:
         with:
           node-version: 16.x          
       - run: yarn
+        working-directory: ./
+      
       - name: Lint Fix
         run: yarn run lint-fix
+        working-directory: ./
         
       - uses: actions/checkout@v3
         with:

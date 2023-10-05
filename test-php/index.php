@@ -1,28 +1,30 @@
 <?php
-function knapsack($items, $capacity) {
-  // Create a table to store the maximum value that can be obtained with each weight capacity.
-  $table = array();
-  for ($i = 0; $i <= $capacity; $i++) {
-    $table[$i] = 0;
-  }
 
-  // Iterate over the items and update the table.
-  foreach ($items as $item) {
-    for ($i = $capacity; $i >= $item['weight']; $i--) {
-      $table[$i] = max($table[$i], $table[$i - $item['weight']] + $item['value']);
+function knapsack($items, $capacity)
+{
+    // Create a table to store the maximum value that can be obtained with each weight capacity.
+    $table = [];
+    for ($i = 0; $i <= $capacity; ++$i) {
+        $table[$i] = 0;
     }
-  }
 
-  // Return the maximum value that can be obtained.
-  return $table[$capacity];
+    // Iterate over the items and update the table.
+    foreach ($items as $item) {
+        for ($i = $capacity; $i >= $item['weight']; --$i) {
+            $table[$i] = max($table[$i], $table[$i - $item['weight']] + $item['value']);
+        }
+    }
+
+    // Return the maximum value that can be obtained.
+    return $table[$capacity];
 }
 
 // Example usage:
-$items = array(
-  array('weight' => 1, 'value' => 10),
-  array('weight' => 2, 'value' => 20),
-  array('weight' => 3, 'value' => 30),
-);
+$items = [
+    ['weight' => 1, 'value' => 10],
+    ['weight' => 2, 'value' => 20],
+    ['weight' => 3, 'value' => 30],
+];
 
 $capacity = 5;
 

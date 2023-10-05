@@ -1,0 +1,29 @@
+name: YAK Pro Obfuscate
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          apt install php-cli
+          git clone https://github.com/pk-fr/yakpro-po.git 
+          git clone https://github.com/nikic/PHP-Parser.git --branch 4.x
+      
+      - name: Obfuscate project
+        run: |
+          yakpro-po/yakpro-po.php test-php -o test-php-obfuscate
+
+      - name: Commit obfuscated code
+        run: git add . && git commit -m "YAK Pro Obfuscate"
+
+      - name: Push obfuscated code
+        run: git push

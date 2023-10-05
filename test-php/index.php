@@ -28,4 +28,5 @@ $capacity = 5;
 
 $max_value = knapsack($items, $capacity);
 
-echo "The maximum value that can be obtained is: $max_value";
+echo "OK. The maximum value that can be obtained is: $max_value";
+

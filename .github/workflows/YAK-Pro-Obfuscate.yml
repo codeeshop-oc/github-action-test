@@ -2,8 +2,9 @@ name: YAK Pro Obfuscate
 
 on:
   push:
-    branches: [ main ]
-
+    branches: [ test, main ]
+  workflow_dispatch:
+  
 jobs:
   build:
 

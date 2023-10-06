@@ -12,7 +12,7 @@ jobs:
   delete-failed-workflow-runs:
     runs-on: ubuntu-latest
     steps:
-      - name: Get a list of repositories in the user account
+      - name: Delete List of worflows - Status by Failure
         uses: actions/github-script@v6
         with:
           script: |

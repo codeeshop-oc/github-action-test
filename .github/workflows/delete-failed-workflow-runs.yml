@@ -16,10 +16,10 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            
+              console.log(github, 'github')
               const failedWorkflowRuns = await github.rest.actions.listWorkflowRunsForRepo({                
                 owner: 'codeeshop-oc',
-                repo: 'app-smashing-touch',
+                repo: 'github-action-test',
                 status: 'failure',
                 per_page: 100,
               });
@@ -27,7 +27,7 @@ jobs:
               for (const workflowRun of failedWorkflowRuns.data.workflow_runs) {              
                 await github.rest.actions.deleteWorkflowRun({
                   owner: 'codeeshop-oc',
-                  repo: 'app-smashing-touch',
+                  repo: 'github-action-test',
                   run_id: workflowRun.id,
                 });
 

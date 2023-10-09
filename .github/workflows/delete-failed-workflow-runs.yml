@@ -2,7 +2,7 @@ name: Delete failed workflow runs
 
 on:
   workflow_dispatch:
-  push: 
+  push:
     branches: [test, main, master]
   schedule:
     # Run every day at midnight
@@ -19,14 +19,31 @@ jobs:
             const full_repo = '${{ github.repository }}'.split('/')
             const owner_name = full_repo[0]
             const repo_name = full_repo[1]
-              const failedWorkflowRuns = await github.rest.actions.listWorkflowRunsForRepo({                
+            const failedWorkflowRuns = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: owner_name,
+              repo: repo_name,
+              status: 'failure',
+              per_page: 100,
+            });
+
+            for (const workflowRun of failedWorkflowRuns.data.workflow_runs) {
+              await github.rest.actions.deleteWorkflowRun({
+                owner: owner_name,
+                repo: repo_name,
+                run_id: workflowRun.id,
+              });
+
+              console.log(`Deleted workflow run ${workflowRun.id}.`);
+            }
+
+            const cancelledWorkflowRuns = await github.rest.actions.listWorkflowRunsForRepo({
                 owner: owner_name,
                 repo: repo_name,
                 status: 'failure',
                 per_page: 100,
               });
-              
-              for (const workflowRun of failedWorkflowRuns.data.workflow_runs) {              
+
+              for (const workflowRun of cancelledWorkflowRuns.data.workflow_runs) {
                 await github.rest.actions.deleteWorkflowRun({
                   owner: owner_name,
                   repo: repo_name,
@@ -35,4 +52,19 @@ jobs:
 
                 console.log(`Deleted workflow run ${workflowRun.id}.`);
               }
-              
+            const skippedWorkflowRuns = await github.rest.actions.listWorkflowRunsForRepo({
+                owner: owner_name,
+                repo: repo_name,
+                status: 'failure',
+                per_page: 100,
+              });
+
+              for (const workflowRun of skippedWorkflowRuns.data.workflow_runs) {
+                await github.rest.actions.deleteWorkflowRun({
+                  owner: owner_name,
+                  repo: repo_name,
+                  run_id: workflowRun.id,
+                });
+
+                console.log(`Deleted workflow run ${workflowRun.id}.`);
+              }

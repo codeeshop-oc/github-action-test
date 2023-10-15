@@ -21,6 +21,13 @@ jobs:
     - name: Test
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}      
+        CONTEXT: ${{ toJson(context) }}      
       run: |
+        echo "$CONTEXT"
         echo "$GITHUB_CONTEXT"
+                
+    - uses: hmarr/auto-approve-action@v3
+      if: ${{ github.event.number && github.event.sender.login == "codeeshop" || github.event.sender.login == "codeeshop-oc" }}
+      with:
+        pull-request-number: ${{ github.event.number }}
     

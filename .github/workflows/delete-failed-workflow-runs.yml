@@ -1,7 +1,7 @@
 name: Delete failed workflow runs
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: 
   schedule:
     # Run every day at midnight
     - cron: '0 0 1 * *'

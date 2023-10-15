@@ -2,11 +2,9 @@ name: Delete failed workflow runs
 
 on:
   workflow_dispatch:
-  push:
-    branches: [test, main, master]
   schedule:
     # Run every day at midnight
-    - cron: '0 0 * * *'
+    - cron: '0 0 1 * *'
 
 jobs:
   delete-failed-workflow-runs:

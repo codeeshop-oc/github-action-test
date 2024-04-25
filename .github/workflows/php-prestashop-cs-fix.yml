@@ -2,13 +2,15 @@
 name: Prestashop PHP CS Fix
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "update", "test", "update-**", "test-**" ]
     paths-ignore:
       - '.github/workflows/**'
       - 'docs/**'
       - '**/*.md'
+
+  workflow_dispatch:
+
 env:
   CONFIG_USERNAME: ${{ github.repository }}
   CONFIG_EMAIL: github-actions[bot]@users.noreply.github.com
@@ -45,7 +47,6 @@ jobs:
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-php-
-
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
@@ -55,29 +56,32 @@ jobs:
         composer require --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer
     - name: Run PHP-CS
       run: tools/php-cs-fixer/vendor/bin/php-cs-fixer fix ./
+    - name: Removed Unwanted vendor
+      run: |
+        rm -rf vendor
+        rm composer.json
+        rm composer.lock
 
     - name: Update Git Config
       run: |
         git config --global user.name "${{ env.CONFIG_USERNAME }}"
         git config --global user.email "${{ env.CONFIG_EMAIL }}"
         git add .
-
+        git rm -f composer.lock
+        git rm -f composer.json
     - name: Check - Something To Commit ?
       id: verify_diff
       run: |
         git diff --quiet --staged . || echo "changed=true" >> $GITHUB_OUTPUT
-
     - name: Deleting Previous Branches
       if: steps.verify_diff.outputs.changed == 'true'
       run: |
         git branch -D ${{ env.TEMP_BRANCH_NAME }} || echo
         git push -d origin ${{ env.TEMP_BRANCH_NAME }} || echo
-
     - name: Setting Branch to Temp Branch Name
       if: steps.verify_diff.outputs.changed == 'true'
       run: |
         git checkout -b ${{ env.TEMP_BRANCH_NAME }}
-
     # Push Commits all changed files to the repository
     - name: Push Commit
       if: steps.verify_diff.outputs.changed == 'true'
@@ -85,7 +89,6 @@ jobs:
       run: |
         git commit -m "${{ env.COMMIT_MESSAGE }}"
         git push -u origin ${{ env.TEMP_BRANCH_NAME }}
-
     - name: Merging
       if: steps.verify_diff.outputs.changed == 'true'
       run: |

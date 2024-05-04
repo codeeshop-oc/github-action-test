@@ -73,9 +73,8 @@ jobs:
           git clone https://github.com/pk-fr/yakpro-po.git
           cd yakpro-po && git clone https://github.com/nikic/PHP-Parser.git --branch 4.x
           rm yakpro-po.cnf
-          cd ..
           ls
-          cp yakpro-po.cnf /yakpro-po
+          cp ../yakpro-po.cnf ./
           ls
           cd yakpro-po
           

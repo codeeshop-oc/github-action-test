@@ -72,7 +72,11 @@ jobs:
         run: |
           git clone https://github.com/pk-fr/yakpro-po.git
           cd yakpro-po && git clone https://github.com/nikic/PHP-Parser.git --branch 4.x
-
+          rm yakpro-po.cnf
+          ls
+          mv ../yakpro-po.cnf /yakpro-po
+          ls
+          
       - name: Obfuscate project
         run: |
           yakpro-po/yakpro-po.php "${{ env.IN_FOLDER }}" -o ${{ env.IN_FOLDER }}-obfuscate

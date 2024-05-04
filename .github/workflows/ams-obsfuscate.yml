@@ -75,8 +75,8 @@ jobs:
           rm yakpro-po.cnf
           ls
           cp ../yakpro-po.cnf ./
-          ls
-          cd yakpro-po
+          echo "$(<yakpro-po.cnf)"
+          ls          
           
       - name: Obfuscate project
         run: |

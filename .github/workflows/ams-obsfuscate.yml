@@ -75,7 +75,7 @@ jobs:
           rm yakpro-po.cnf
           cd ..
           ls
-          mv yakpro-po.cnf /yakpro-po
+          cp yakpro-po.cnf /yakpro-po
           ls
           cd yakpro-po
           

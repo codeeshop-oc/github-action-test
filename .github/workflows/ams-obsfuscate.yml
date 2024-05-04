@@ -72,11 +72,7 @@ jobs:
         run: |
           git clone https://github.com/pk-fr/yakpro-po.git
           cd yakpro-po && git clone https://github.com/nikic/PHP-Parser.git --branch 4.x
-          rm yakpro-po.cnf
-          ls
-          cp ../yakpro-po.cnf ./
-          echo "$(<yakpro-po.cnf)"
-          ls          
+          rm yakpro-po.cnf && cp ../yakpro-po.cnf ./          
           
       - name: Obfuscate project
         run: |

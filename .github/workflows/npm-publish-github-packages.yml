@@ -1,0 +1,48 @@
+name: Install PHP and Generate Vendor
+
+on:
+  workflow_dispatch:
+permissions:
+      contents: write      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up PHP 7.4
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+        tools: composer
+
+    - name: Install dependencies
+      run: |
+        composer require phpoffice/phpspreadsheet:1.29.0
+        composer install --no-dev --classmap-authoritative
+
+    - name: Cache Composer packages
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
+    - name: Run a sample PHP script (optional)
+      run: |
+        php -r "echo 'PHP and dependencies installed successfully';"
+
+    - name: List vendor folder
+      run: |
+        ls -la vendor/
+  
+    - name: Commit and push vendor folder to test branch
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add vendor
+        git commit -m "Add vendor folder with dependencies"
+        git push origin test

@@ -33,10 +33,6 @@ jobs:
     - name: Run a sample PHP script (optional)
       run: |
         php -r "echo 'PHP and dependencies installed successfully';"
-
-    - name: List vendor folder
-      run: |
-        ls -la vendor/
   
     - name: Commit and push vendor folder to test branch
       run: |

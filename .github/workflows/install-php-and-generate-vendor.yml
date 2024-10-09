@@ -21,6 +21,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd stripe-phpzz && composer install --no-dev --classmap-authoritative && cd ..
+        ls
     - name: Cache Composer packages
       uses: actions/cache@v3
       with:
